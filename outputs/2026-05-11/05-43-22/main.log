@@ -1,0 +1,5 @@
+[2026-05-11 05:43:22,906][numexpr.utils][INFO] - NumExpr defaulting to 16 threads.
+[2026-05-11 05:43:30,442][__main__][INFO] - === Data Centre Network Builder ===
+[2026-05-11 05:43:30,443][__main__][INFO] - Facility  : DataCentre-Alpha
+[2026-05-11 05:43:30,444][__main__][INFO] - Cooling   : air_cooled_chiller | liquid_immersion | cooling_tower
+[2026-05-11 05:43:30,444][__main__][INFO] - Components: ['air_cooled_chiller', 'liquid_immersion', 'cooling_tower']

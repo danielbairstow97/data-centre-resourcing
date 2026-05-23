@@ -1,0 +1,18 @@
+# - name: air_cooled_chiller
+#   elec_MW_per_MW_heat: 0.30       # compressor + condenser fan draw (COP ~3.3)
+#   water_L_per_MWh_heat: 0.0
+#   capex_per_MW_it: 150000
+#   opex_per_MW: 8000
+#   lifetime_years: 20
+# - name: liquid_immersion
+#   elec_MW_per_MW_heat: 0.05        # CDU pumps + dry cooler fans
+#   water_L_per_MWh_heat: 50.0       # closed-loop make-up (leaks, evaporation)
+#   capex_per_MW_it: 300000
+#   opex_per_MW: 10000
+#   lifetime_years: 15
+- name: cooling_tower
+  elec_MW_per_MW_heat: 0.05       # pump + cooling tower fan draw
+  water_L_per_MWh_heat: 1800.0   # evaporative loss (makeup not included)
+  capex_per_MW_it: 80000
+  opex_per_MW: 5000
+  lifetime_years: 20

@@ -1,0 +1,60 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "dc"
+version = "0.0.1"
+description = "Renewable Energy Project Feasibility Analysis"
+authors = [
+  { name = "Daniel Bairstow" },
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+
+]
+dependencies = [
+    "loguru",
+    "pip",
+    "pytest",
+    "ruff",
+    "tqdm",
+    "typer",
+    "ipykernel (>=7.2.0,<8.0.0)",
+    "plotly (>=6.6.0,<7.0.0)",
+    "pypsa (>=1.1.2,<2.0.0)",
+    "omegaconf (>=2.3.0,<3.0.0)",
+    "pvlib (>=0.15.1,<0.16.0)",
+    "pydantic-extra-types (>=2.11.1,<3.0.0)",
+    "timezonefinder (>=8.2.4,<9.0.0)",
+    "hydra-core (>=1.3.2,<2.0.0)",
+    "gurobipy (>=13.0.2,<14.0.0)",
+]
+requires-python = "~=3.12.0"
+
+[tool.ruff]
+line-length = 99
+src = ["dc"]
+include = ["pyproject.toml", "dc/**/*.py"]
+
+[tool.ruff.lint]
+extend-select = ["I"]  # Add import sorting
+
+[tool.ruff.lint.isort]
+known-first-party = ["dc"]
+force-sort-within-sections = true
+
+[tool.poetry]
+packages = [
+    { include = "dc" }
+]
+
+[tool.poetry.dependencies]
+enn554 = {develop = true}
+
+[dependency-groups]
+dev = [
+    "ipykernel (>=7.2.0,<8.0.0)",
+    "jupyter (>=1.1.1,<2.0.0)"
+]

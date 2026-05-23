@@ -1,0 +1,32 @@
+# =============================================================================
+# Cooling scenario: Direct Liquid / Immersion Cooling
+# =============================================================================
+# Coolant (water, dielectric fluid, or two-phase refrigerant) circulates
+# directly through server components or submerges them entirely.
+# Heat is captured at source — no chilled air distribution needed.
+#
+# Advantages:
+#   - Very low PUE overhead (near 1.03–1.06 total facility PUE achievable)
+#   - Minimal water consumption (closed-loop with small make-up only)
+#   - High heat-rejection temperature enables heat reuse / free cooling
+#
+# Disadvantages:
+#   - High CAPEX: server retrofits, manifolds, leak-detection, CDUs
+#   - Operational complexity vs traditional air cooling
+#
+# High-level metrics (approximate, flat-load 1 MW_it):
+#   Electrical overhead : 50 kW/MW_it  (CDU pumps, dry cooler fans)
+#   Water consumption   : 50 L/MWh_it  (closed-loop make-up only)
+#   CAPEX               : $300k/MW_it  (includes server-side hardware)
+# =============================================================================
+
+name: Direct Liquid / Immersion Cooling
+
+technologies:
+  - name: liquid_immersion
+    fraction_of_load: 1.0
+    elec_MW_per_MW_heat: 0.05        # CDU pumps + dry cooler fans
+    water_L_per_MWh_heat: 50.0       # closed-loop make-up (leaks, evaporation)
+    capex_per_MW_it: 300000
+    opex_per_MW_year: 10000
+    lifetime_years: 15

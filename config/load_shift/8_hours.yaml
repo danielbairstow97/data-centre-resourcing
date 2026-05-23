@@ -1,0 +1,5 @@
+# @package compute.load_shift
+enabled: false
+max_shift_hours: 8.0
+max_store_energy_factor: 1.0
+marginal_cost_shift: 0.0

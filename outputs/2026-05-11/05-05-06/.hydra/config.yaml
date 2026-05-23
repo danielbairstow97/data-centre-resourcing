@@ -1,0 +1,107 @@
+name: DataCentre-Alpha
+simulation:
+  snapshots_start: '2025-01-01'
+  snapshots_end: '2025-12-31'
+  snapshot_freq: h
+financial:
+  discount_rate: 0.07
+  project_lifetime: 25
+facility:
+  targets:
+    power_usage_effectiveness: 1.0
+    renewable_energy_factor: 0.0
+    water_usage_effectiveness: 1.0
+  roof_area_m2: 1000
+  usable_roof_fraction: 0.85
+  location:
+    latitude: -27.4698
+    longitude: 153.0251
+compute:
+  electricity_MW_per_request: 1.0e-06
+  requests_per_snapshot: 1000000
+  load_shift:
+    enabled: false
+    max_shift_hours: 4.0
+    max_store_energy_factor: 1.0
+    marginal_cost_shift: 0.0
+cooling:
+  technologies:
+  - name: air_cooled_chiller
+    elec_MW_per_MW_heat: 0.3
+    water_L_per_MWh_heat: 0.0
+    capex_per_MW_it: 150000
+    opex_per_MW_year: 8000
+    lifetime_years: 20
+  - name: liquid_immersion
+    elec_MW_per_MW_heat: 0.05
+    water_L_per_MWh_heat: 50.0
+    capex_per_MW_it: 300000
+    opex_per_MW_year: 10000
+    lifetime_years: 15
+  - name: cooling_tower
+    elec_MW_per_MW_heat: 0.05
+    water_L_per_MWh_heat: 1800.0
+    capex_per_MW_it: 80000
+    opex_per_MW_year: 5000
+    lifetime_years: 20
+supplies:
+  water:
+    cost_per_L: 0.001
+    max_daily_L: null
+  gas:
+    cost_per_GJ: 8.0
+    scope1_co2_t_per_GJ: 0.05153
+    scope3_co2_t_per_GJ: 0.0088
+grid_connection:
+  capex_per_MW: 10.0
+  transmission_loss_factor: 0.975
+generation:
+  onsite:
+    ccgt:
+      enabled: true
+      capex_per_MW: 900000
+      opex_per_MW: 1000
+      water_L_per_MWh: 700.0
+      electrical_efficiency: 0.4
+      block_size_MW: 400.0
+      p_nom_extendable: true
+      lifetime_years: 25
+    rooftop_solar:
+      enabled: true
+      capex_per_MW: 1200000
+      opex_per_MW: 15000
+      roof_m2_per_MW_peak: 100
+      lifetime_years: 25
+    battery:
+      enabled: false
+      capex_per_MWh: 300000
+      opex_per_MWh: 1000
+      efficiency_charge: 0.95
+      efficiency_discharge: 0.95
+      max_hours: 4.0
+      e_nom_extendable: true
+      lifetime_years: 15
+  ppa:
+    solar:
+      enabled: true
+      contract_price_per_MWh: 1000
+      contract_capacity_fee_per_MW: 0.0
+      profile:
+        type: location_solar
+        location:
+          latitude: -27.4698
+          longitude: 153.0251
+        orientation_from_location: true
+        performance_ratio: 0.7
+    wind:
+      enabled: true
+      contract_price_per_MWh: 1000
+      contract_capacity_fee_per_MW: 0.0
+      profile:
+        type: flat
+        capacity_factor: 0.25
+  nem:
+    cost_per_MWh: 1000
+solver:
+  name: gurobi
+  options: {}

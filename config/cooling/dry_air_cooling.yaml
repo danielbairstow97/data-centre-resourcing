@@ -1,0 +1,26 @@
+# =============================================================================
+# Cooling scenario: Dry Air-Cooled Chiller
+# =============================================================================
+# Zero process water consumption — heat rejected entirely to air via
+# air-cooled condensers.  Higher compressor electrical draw than wet cooling.
+#
+# Common in water-scarce regions or where water discharge consents are limiting.
+# Performance degrades at high ambient temperatures (derate p_max_pu externally
+# using a temperature-dependent time-series for full accuracy).
+#
+# High-level metrics (approximate, flat-load 1 MW_it):
+#   Electrical overhead : 300 kW per MW_it  (COP ≈ 3.3 at design conditions)
+#   Water consumption   : 0 L/MWh_it
+#   CAPEX               : $150k/MW_it
+# =============================================================================
+
+name: Dry Air-Cooled Chiller
+
+technologies:
+  - name: air_cooled_chiller
+    fraction_of_load: 1.0
+    elec_MW_per_MW_heat: 0.30       # compressor + condenser fan draw (COP ~3.3)
+    water_L_per_MWh_heat: 0.0
+    capex_per_MW_it: 150000
+    opex_per_MW_year: 8000
+    lifetime_years: 20

@@ -1,0 +1,99 @@
+defaults:
+  - _self_
+  - cooling: combo   # default cooling scenario; override on CLI
+  - load_shift@compute.load_shift: no_shift
+
+name: "DataCentre-Alpha"
+
+simulation:
+  snapshots_start: "2025-01-01"
+  snapshots_end:   "2025-12-31"
+  snapshot_freq:   "h"
+
+financial:
+  discount_rate: 0.07
+  project_lifetime: 25
+
+facility:
+  targets:
+    power_usage_effectiveness: 1.0
+    renewable_energy_factor: 0.0
+    water_usage_effectiveness: 1.0
+  roof_area_m2: 1_000
+  usable_roof_fraction: 0.85
+  location: null
+
+compute:
+  capacity_mw: 100
+  water_use_effectiveness: 1.0
+  power_use_effectiveness: 1.0
+  load_realisation_factor: 0.75
+  load_shift: null
+
+cooling: null
+
+supplies:
+  water:
+    cost_per_L: 0.001
+    max_daily_L: null
+  gas:
+    cost_per_GJ: 8.0
+    co2_t_per_GJ: 0.05153
+
+grid_connection:
+  capex_per_MW: 11_500_00
+  transmission_loss_factor: 0.975
+
+generation:
+  onsite:
+    ccgt:
+      enabled: true
+      capex_per_MW: 900000
+      opex_per_MW: 1000
+      water_L_per_MWh: 700.0
+      electrical_efficiency: 0.4
+      block_size_MW: 400.0
+      p_nom_extendable: true
+      lifetime_years: 25
+    rooftop_solar:
+      enabled: true
+      capex_per_MW: 1200000
+      opex_per_MW: 15000
+      panel_efficiency: 0.23
+      ground_cover_ratio: 0.6
+      lifetime_years: 25
+    battery:
+      enabled: true
+      capex_per_MWh: 300000
+      opex_per_MWh: 1000
+      efficiency_charge: 0.95
+      efficiency_discharge: 0.95
+      max_hours: 4.0
+      e_nom_extendable: true
+      lifetime_years: 15
+  ppa:
+    - name: solar_farm
+      technology: solar
+      enabled: true
+      contract_price_per_MWh: 1000
+      contract_capacity_fee_per_MW: 0.0
+      profile:
+        type: location_solar
+        location:
+          latitude: -27.4698
+          longitude: 153.0251
+        performance_ratio: 0.7
+    - name: wind_farm
+      technology: wind
+      enabled: true
+      contract_price_per_MWh: 1000
+      contract_capacity_fee_per_MW: 0.0
+      profile:
+        type: flat
+        capacity_factor: 0.25
+  nem:
+    cost_per_MWh: 1_000
+
+solver:
+  name: "gurobi"
+  options: {}
