@@ -15,13 +15,12 @@ financial:
   project_lifetime: 25
 
 facility:
-  targets:
-    power_usage_effectiveness: 1.0
-    renewable_energy_factor: 0.0
-    water_usage_effectiveness: 1.0
   roof_area_m2: 1_000
   usable_roof_fraction: 0.85
-  location: null
+  location:
+    latitude: -27.4698
+    longitude: 153.0251
+
 
 compute:
   capacity_mw: 100
@@ -34,38 +33,33 @@ cooling: null
 
 supplies:
   water:
-    cost_per_L: 0.001
+    cost_per_L: 0.00274
     max_daily_L: null
   gas:
-    cost_per_GJ: 8.0
+    cost_per_GJ: 13.3
     co2_t_per_GJ: 0.05153
 
 grid_connection:
-  capex_per_MW: 11_500_00
+  capex_per_MW: 11_500_000 #
   transmission_loss_factor: 0.975
 
 generation:
   onsite:
     ccgt:
       enabled: true
-      capex_per_MW: 900000
-      opex_per_MW: 1000
+      capex_per_MW: 2_497_000 # Gencost
+      opex_per_MW: 46_000 # Gencost
       water_L_per_MWh: 700.0
-      electrical_efficiency: 0.4
-      block_size_MW: 400.0
+      electrical_efficiency: 0.51 # Gencost
+      block_size_MW: 10.0
       p_nom_extendable: true
       lifetime_years: 25
     rooftop_solar:
-      enabled: true
-      capex_per_MW: 1200000
-      opex_per_MW: 15000
-      panel_efficiency: 0.23
-      ground_cover_ratio: 0.6
-      lifetime_years: 25
+      enabled: False
     battery:
       enabled: true
-      capex_per_MWh: 300000
-      opex_per_MWh: 1000
+      capex_per_MWh: 606_000 # gencost
+      opex_per_MWh: 15_050 # 2.5% of capex
       efficiency_charge: 0.95
       efficiency_discharge: 0.95
       max_hours: 4.0
@@ -75,7 +69,7 @@ generation:
     - name: solar_farm
       technology: solar
       enabled: true
-      contract_price_per_MWh: 1000
+      contract_price_per_MWh: 70 # LCOE gencost
       contract_capacity_fee_per_MW: 0.0
       profile:
         type: location_solar
@@ -86,11 +80,11 @@ generation:
     - name: wind_farm
       technology: wind
       enabled: true
-      contract_price_per_MWh: 1000
+      contract_price_per_MWh: 103.5 # LCOE gencost
       contract_capacity_fee_per_MW: 0.0
       profile:
         type: flat
-        capacity_factor: 0.25
+        capacity_factor: 0.35 # Gencost
   nem:
     cost_per_MWh: 1_000
 

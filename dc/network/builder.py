@@ -287,46 +287,11 @@ class Builder:
             bus0=BusName.COMPUTE.value,
             bus1=BusName.FACILITY.value,
             bus2=BusName.WATER_SUPPLY.value,
-            efficiency=-1.0,  # MW_e per request → facility
-            efficiency2=1.0,  # MW_th per request → cooling_bus
+            efficiency=ccfg.power_use_effectiveness,  # MW_e per request → facility
+            efficiency2=ccfg.water_use_effectiveness,  # MW_th per request → cooling_bus
             p_nom=load_profile.max() * 2,
             p_nom_extendable=False,
         )
-
-    def _add_cooling(self) -> None:
-        """
-        Add one PyPSA Link per CoolingComponent in the active cooling scenario.
-
-        Each Link balances the cooling_bus (heat load in MW_th) by:
-          bus0 = cooling_bus  (heat consumed, MW_th input)
-          bus1 = facility     (electricity drawn, efficiency = -elec_MW_per_MW_heat)
-          bus2 = water_bus    (water consumed,   efficiency = -water_L_per_MWh_heat)
-
-        Negative efficiency on bus1/bus2 means the facility and water buses
-        *lose* flow — electricity and water are consumed, not produced.
-
-        For climate-limited components (annual_availability_hours set), a flat
-        p_max_pu is applied as a first-order availability proxy.  Replace with
-        a time-series via n.links_t.p_max_pu after build() for full resolution.
-        """
-        for component in self.cfg.cooling:
-            link_name = f"cooling:{component.name}"
-
-            self.n.add(
-                "Link",
-                link_name,
-                bus0=BusName.COOLING.value,
-                bus1=BusName.FACILITY.value,
-                bus2=BusName.WATER_SUPPLY.value,
-                efficiency=-component.elec_MW_per_MW_heat,
-                efficiency2=-component.water_L_per_MWh_heat,
-                p_nom=1e6,
-                p_nom_extendable=True,
-                overnight_cost=component.capex_per_MW_it,
-                fom=component.opex_per_MW,
-                lifetime=component.lifetime_years,
-                discount_rate=self.discount_rate,
-            )
 
     def _add_onsite_generation(self):
         gen = self.cfg.generation.onsite
@@ -343,7 +308,7 @@ class Builder:
     def _add_ccgt(self) -> None:
         ccfg = self.cfg.generation.onsite.ccgt
         water_per_MWh_th = ccfg.water_L_per_MWh
-        co2_t_per_MWh_th = self.cfg.supplies.gas.scope3_co2_t_per_GJ * GAS_GJ_TO_MWth
+        co2_t_per_MWh_th = self.cfg.supplies.gas.scope1_co2_t_per_GJ * GAS_GJ_TO_MWth
 
         self.n.add(
             "Link",
@@ -358,7 +323,6 @@ class Builder:
             p_nom_extendable=ccfg.p_nom_extendable,
             p_nom=0.0,
             overnight_cost=ccfg.capex_per_MW,
-            fom_cost=ccfg.opex_per_MW,
             lifetime=ccfg.lifetime_years,
             discount_rate=self.discount_rate,
         )
@@ -462,7 +426,7 @@ class Builder:
         self.n.add(
             "Generator",
             gen_name,
-            bus="facility",
+            bus="grid",
             carrier=carrier,
             marginal_cost=contract.contract_price_per_MWh,
             p_nom_extendable=True,
