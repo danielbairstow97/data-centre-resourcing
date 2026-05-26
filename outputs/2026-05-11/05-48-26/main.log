@@ -1,7 +1,0 @@
-[2026-05-11 05:48:26,845][numexpr.utils][INFO] - NumExpr defaulting to 16 threads.
-[2026-05-11 05:48:34,152][__main__][INFO] - === Data Centre Network Builder ===
-[2026-05-11 05:48:34,153][__main__][INFO] - Facility  : DataCentre-Alpha
-[2026-05-11 05:48:34,155][__main__][INFO] - Cooling   : air_cooled_chiller | liquid_immersion | cooling_tower
-[2026-05-11 05:48:34,155][__main__][INFO] - Components: ['air_cooled_chiller', 'liquid_immersion', 'cooling_tower']
-[2026-05-11 05:48:34,432][pypsa.consistency][WARNING] - The following links have buses which are not defined. Add them using n.add() or run n.sanitize() to add them automatically. Components with undefined buses:
-Index(['grid_connection'], dtype='str', name='name')

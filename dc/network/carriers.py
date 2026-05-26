@@ -20,10 +20,11 @@ class Carriers(str, Enum):
     ELECTRICITY = "electricity"
     GRID = "grid"
     GAS = "gas"
+    CCGT = "ccgt"
     WATER = "water"
     COMPUTE = "compute"
+    COMPUTE_SHIFT = "compute_shift"
     CARBON = "co2"
-    COOLING = "cooling"
     BESS = "bess"
     SOLAR = "solar"
     WIND = "wind"
@@ -35,8 +36,10 @@ class Carriers(str, Enum):
 _CARRIER_META: dict[str, CarrierMeta] = {
     "grid": CarrierMeta(name="grid", co2_tonnes_per_mwh=0.0, nice_name="Grid Electricity"),
     "solar": CarrierMeta(name="solar", nice_name="Solar PV", color="#e2f10f"),
+    "ccgt": CarrierMeta(name="ccgt", nice_name="Closed Cycle Gas Turbine", color="#a30a4a"),
     "wind": CarrierMeta(name="wind", nice_name="Wind", color="#9a0ff1"),
     "bess": CarrierMeta(name="bess", nice_name="Battery Energy Storage System", color="#0ff1de"),
+    "compute_shift": CarrierMeta(name="compute_shift", nice_name="Flexible Compute", color="#00218b"),
     "electricity": CarrierMeta(
         name="electricity",
         co2_tonnes_per_mwh=0.0,
@@ -45,7 +48,7 @@ _CARRIER_META: dict[str, CarrierMeta] = {
     ),
     "gas": CarrierMeta(
         name="gas",
-        co2_tonnes_per_mwh=0.202,
+        co2_tonnes_per_mwh=0.0,
         nice_name="Natural Gas",
         color="#e67e22",
     ),

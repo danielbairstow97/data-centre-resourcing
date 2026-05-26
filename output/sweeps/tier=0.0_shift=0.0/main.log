@@ -1,0 +1,110 @@
+[2026-05-25 13:27:09,820][__main__][INFO] - === Run: grid_capacity=0.0 MW  shift=0.0% ===
+[2026-05-25 13:27:10,445][dc.network.ppa.profiles][INFO] - PVLib location_solar PPA farm (-27.47°, 153.03°): tilt=27.5° az=180.0° PR=0.70 | clear-sky yield=1683 MWh/MWp/yr → P50 yield=1178 MWh/MWp/yr | mean CF=0.1345  max CF=0.6505  zero-hours=4330
+[2026-05-25 13:27:10,498][dc.network.builder][INFO] - Network built: 6 buses, 5 generators, 3 links, 1 stores
+[2026-05-25 13:27:10,499][dc.network.solver][INFO] - Solving (snapshots=8736, components: 5G 3L 1S)
+[2026-05-25 13:27:10,604][pypsa.consistency][WARNING] - Encountered nan's in static data for columns ['efficiency3', 'efficiency2'] of component 'Link'.
+[2026-05-25 13:27:12,255][pypsa.optimization.constraints][WARNING] - StorageUnits ['facility_battery']: Cyclic state of charge constraint overrules initial storage level setting. User-defined state_of_charge_initial will be ignored.
+[2026-05-25 13:27:12,538][linopy.model][INFO] -  Solve problem using Gurobi solver
+[2026-05-25 13:27:12,538][linopy.model][INFO] - Solver options:
+ - NumericFocus: 3
+ - ObjScale: -1
+ - ScaleFlag: 2
+ - log_to_console: False
+[2026-05-25 13:27:12,776][linopy.io][INFO] - Writing objective.
+[2026-05-25 13:27:13,629][linopy.io][INFO] -  Writing time: 0.85s
+[2026-05-25 13:27:13,661][gurobipy][INFO] - Set parameter WLSAccessID
+[2026-05-25 13:27:13,662][gurobipy][INFO] - Set parameter WLSSecret
+[2026-05-25 13:27:13,662][gurobipy][INFO] - Set parameter LicenseID to value 2709657
+[2026-05-25 13:27:13,665][gurobipy][INFO] - Academic license 2709657 - for non-commercial use only - registered to n1___@qut.edu.au
+[2026-05-25 13:27:14,084][gurobipy][INFO] - Read LP format model from file /tmp/linopy-problem-w3t716u3.lp
+[2026-05-25 13:27:14,085][gurobipy][INFO] - Reading time = 0.42 seconds
+[2026-05-25 13:27:14,085][gurobipy][INFO] - obj: 279562 rows, 113575 columns, 493632 nonzeros
+[2026-05-25 13:27:14,086][gurobipy][INFO] - Set parameter NumericFocus to value 3
+[2026-05-25 13:27:14,087][gurobipy][INFO] - Set parameter ObjScale to value -1
+[2026-05-25 13:27:14,087][gurobipy][INFO] - Set parameter ScaleFlag to value 2
+[2026-05-25 13:27:14,087][gurobipy][INFO] - Set parameter LogToConsole to value 0
+[2026-05-25 13:27:14,088][gurobipy][INFO] - Gurobi Optimizer version 13.0.2 build v13.0.2rc1 (linux64 - "Debian GNU/Linux 13 (trixie)")
+[2026-05-25 13:27:14,088][gurobipy][INFO] - 
+[2026-05-25 13:27:14,088][gurobipy][INFO] - CPU model: 13th Gen Intel(R) Core(TM) i7-13620H, instruction set [SSE2|AVX|AVX2]
+[2026-05-25 13:27:14,088][gurobipy][INFO] - Thread count: 8 physical cores, 16 logical processors, using up to 16 threads
+[2026-05-25 13:27:14,089][gurobipy][INFO] - 
+[2026-05-25 13:27:14,089][gurobipy][INFO] - Non-default parameters:
+[2026-05-25 13:27:14,089][gurobipy][INFO] - ObjScale  -1
+[2026-05-25 13:27:14,090][gurobipy][INFO] - ScaleFlag  2
+[2026-05-25 13:27:14,090][gurobipy][INFO] - LogToConsole  0
+[2026-05-25 13:27:14,090][gurobipy][INFO] - NumericFocus  3
+[2026-05-25 13:27:14,091][gurobipy][INFO] - 
+[2026-05-25 13:27:14,091][gurobipy][INFO] - Academic license 2709657 - for non-commercial use only - registered to n1___@qut.edu.au
+[2026-05-25 13:27:14,092][gurobipy][INFO] - Optimize a model with 279562 rows, 113575 columns and 493632 nonzeros (Min)
+[2026-05-25 13:27:14,100][gurobipy][INFO] - Model fingerprint: 0x28877c22
+[2026-05-25 13:27:14,100][gurobipy][INFO] - Model has 43684 linear objective coefficients
+[2026-05-25 13:27:14,103][gurobipy][INFO] - Coefficient statistics:
+[2026-05-25 13:27:14,103][gurobipy][INFO] -   Matrix range     [7e-07, 4e+00]
+[2026-05-25 13:27:14,103][gurobipy][INFO] -   Objective range  [3e-03, 3e+05]
+[2026-05-25 13:27:14,104][gurobipy][INFO] -   Bounds range     [0e+00, 0e+00]
+[2026-05-25 13:27:14,112][gurobipy][INFO] -   RHS range        [8e+01, 1e+09]
+[2026-05-25 13:27:14,115][gurobipy][INFO] - 
+[2026-05-25 13:27:14,320][gurobipy][INFO] - Presolve removed 227146 rows and 78629 columns
+[2026-05-25 13:27:14,321][gurobipy][INFO] - Presolve time: 0.23s
+[2026-05-25 13:27:14,321][gurobipy][INFO] - Presolved: 52416 rows, 34946 columns, 131040 nonzeros
+[2026-05-25 13:27:14,321][gurobipy][INFO] - 
+[2026-05-25 13:27:14,337][gurobipy][INFO] - Iteration    Objective       Primal Inf.    Dual Inf.      Time
+[2026-05-25 13:27:14,338][gurobipy][INFO] -        0    5.8662611e+07   0.000000e+00   0.000000e+00      0s
+[2026-05-25 13:27:14,344][gurobipy][INFO] - 
+[2026-05-25 13:27:14,344][gurobipy][INFO] - Use crossover to convert LP symmetric solution to basic solution...
+[2026-05-25 13:27:14,351][gurobipy][INFO] - Crossover log...
+[2026-05-25 13:27:14,352][gurobipy][INFO] - 
+[2026-05-25 13:27:14,431][gurobipy][INFO] -        1 DPushes remaining with DInf 0.0000000e+00                 0s
+[2026-05-25 13:27:14,452][gurobipy][INFO] -        0 DPushes remaining with DInf 0.0000000e+00                 0s
+[2026-05-25 13:27:14,464][gurobipy][INFO] - 
+[2026-05-25 13:27:14,465][gurobipy][INFO] -        0 PPushes remaining with PInf 0.0000000e+00                 0s
+[2026-05-25 13:27:14,470][gurobipy][INFO] - 
+[2026-05-25 13:27:14,471][gurobipy][INFO] -   Push phase complete: Pinf 0.0000000e+00, Dinf 7.7614258e-17      0s
+[2026-05-25 13:27:14,472][gurobipy][INFO] - 
+[2026-05-25 13:27:14,490][gurobipy][INFO] - Crossover time: 0.15 seconds (0.18 work units)
+[2026-05-25 13:27:14,658][gurobipy][INFO] - Iteration    Objective       Primal Inf.    Dual Inf.      Time
+[2026-05-25 13:27:14,659][gurobipy][INFO] -        4    5.8662611e+07   0.000000e+00   0.000000e+00      1s
+[2026-05-25 13:27:14,659][gurobipy][INFO] - 
+[2026-05-25 13:27:14,660][gurobipy][INFO] - Solved in 4 iterations and 0.57 seconds (0.55 work units)
+[2026-05-25 13:27:14,660][gurobipy][INFO] - Optimal objective  5.866261118e+07
+[2026-05-25 13:27:16,219][gurobipy][INFO] - Warning: environment still referenced so free is deferred (Continue to use WLS)
+[2026-05-25 13:27:16,222][linopy.constants][INFO] -  Optimization successful: 
+Status: ok
+Termination condition: optimal
+Solution: 113575 primals, 279562 duals
+Objective: 5.87e+07
+Solver model: available
+Solver message: 2
+
+[2026-05-25 13:27:16,612][pypsa.optimization.optimize][INFO] - The shadow-prices of the constraints Generator-fix-p-lower, Generator-fix-p-upper, Generator-ext-p-lower, Generator-ext-p-upper, Link-fix-p-lower, Link-fix-p-upper, Link-ext-p-lower, Link-ext-p-upper, Store-fix-e-lower, Store-fix-e-upper, StorageUnit-ext-p_dispatch-lower, StorageUnit-ext-p_dispatch-upper, StorageUnit-ext-p_store-lower, StorageUnit-ext-p_store-upper, StorageUnit-ext-state_of_charge-lower, StorageUnit-ext-state_of_charge-upper, StorageUnit-energy_balance, Store-energy_balance were not assigned to the network.
+[2026-05-25 13:27:16,778][dc.network.solver][INFO] - Solve complete: status=ok, condition=optimal
+[2026-05-25 13:27:16,786][dc.network.solver][INFO] - 
+══ Data Centre Metrics ══════════════════════════════════════════
+  PUE   Power Usage Effectiveness  : 1.3400
+  WUE   (IT cooling)               : 0.0120 kL/MWh_it
+  WUE   (CCGT water)               : 1.8392 kL/MWh_it
+  WUE   (total)                    : 1.8512 kL/MWh_it
+  CUE   Carbon Usage Effectiveness : 0.0376 tCO₂/MWh_it
+  REF   Renewable Energy Factor    : 0.0%
+── Totals ────────────────────────────────────────────────────────
+  IT load             :    655,200.0 MWh/yr
+  Total facility      :    877,968.0 MWh/yr
+  Water (IT)          :        7,862 kL/yr
+  Water (CCGT)        :    1,205,054 kL/yr
+  Water (total)       :    1,212,917 kL/yr
+  Scope 1 CO₂         :     24,641.4 t/yr
+  Renewable energy    :          0.0 MWh/yr
+── Generation mix ───────────────────────────────────────────────
+  Grid import          :          0.0 MWh  0.0%  [0.0 MW]
+  CCGT                 :    877,968.0 MWh  100.0%  [197.1 MW]
+  Solar PPA            :          0.0 MWh  0.0%  [0.0 MW]
+  Wind PPA             :          0.0 MWh  0.0%  [0.0 MW]
+  Rooftop solar        :          0.0 MWh  0.0%
+  Battery (net)        :          0.0 MWh  [0.0 MWh]
+── Load shifting ─────────────────────────────────────────────────
+  Load shifting        : disabled
+═════════════════════════════════════════════════════════════════
+[2026-05-25 13:27:16,795][__main__][INFO] - Solved | obj=58662611.18 | buses=6 generators=5 links=3 stores=1
+[2026-05-25 13:27:17,028][pypsa.network.io][INFO] - Exported network 'Unnamed Network' saved to '/workspaces/Uni/ENN655/dc/output/sweeps/tier=0.0_shift=0.0/network.nc contains: sub_networks, buses, storage_units, links, stores, carriers, loads, generators
+[2026-05-25 13:27:17,920][__main__][INFO] - Network saved → /workspaces/Uni/ENN655/dc/output/sweeps/tier=0.0_shift=0.0/network.nc
+[2026-05-25 13:27:17,944][__main__][INFO] - Results saved → /workspaces/Uni/ENN655/dc/output/sweeps/tier=0.0_shift=0.0/results.json

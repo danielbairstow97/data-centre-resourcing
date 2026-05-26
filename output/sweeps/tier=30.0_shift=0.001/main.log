@@ -1,0 +1,177 @@
+[2026-05-25 13:28:21,635][__main__][INFO] - === Run: grid_capacity=30.0 MW  shift=0.1% ===
+[2026-05-25 13:28:22,071][dc.network.ppa.profiles][INFO] - PVLib location_solar PPA farm (-27.47°, 153.03°): tilt=27.5° az=180.0° PR=0.70 | clear-sky yield=1683 MWh/MWp/yr → P50 yield=1178 MWh/MWp/yr | mean CF=0.1345  max CF=0.6505  zero-hours=4330
+[2026-05-25 13:28:22,103][dc.network.builder][INFO] - Network built: 6 buses, 5 generators, 3 links, 2 stores
+[2026-05-25 13:28:22,103][dc.network.solver][INFO] - Solving (snapshots=8736, components: 5G 3L 2S)
+[2026-05-25 13:28:22,151][pypsa.consistency][WARNING] - Encountered nan's in static data for columns ['efficiency3', 'efficiency2'] of component 'Link'.
+[2026-05-25 13:28:23,948][pypsa.optimization.constraints][WARNING] - StorageUnits ['facility_battery']: Cyclic state of charge constraint overrules initial storage level setting. User-defined state_of_charge_initial will be ignored.
+[2026-05-25 13:28:24,020][pypsa.optimization.constraints][WARNING] - Stores ['compute_shift']: Cyclic energy level constraint overrules initial value setting. User-defined e_initial will be ignored.
+[2026-05-25 13:28:24,238][linopy.model][INFO] -  Solve problem using Gurobi solver
+[2026-05-25 13:28:24,238][linopy.model][INFO] - Solver options:
+ - NumericFocus: 3
+ - ObjScale: -1
+ - ScaleFlag: 2
+ - log_to_console: False
+[2026-05-25 13:28:24,461][linopy.io][INFO] - Writing objective.
+[2026-05-25 13:28:24,977][linopy.io][INFO] -  Writing time: 0.52s
+[2026-05-25 13:28:24,996][gurobipy][INFO] - Set parameter WLSAccessID
+[2026-05-25 13:28:24,996][gurobipy][INFO] - Set parameter WLSSecret
+[2026-05-25 13:28:24,997][gurobipy][INFO] - Set parameter LicenseID to value 2709657
+[2026-05-25 13:28:24,998][gurobipy][INFO] - Academic license 2709657 - for non-commercial use only - registered to n1___@qut.edu.au
+[2026-05-25 13:28:25,400][gurobipy][INFO] - Read LP format model from file /tmp/linopy-problem-ksm__a57.lp
+[2026-05-25 13:28:25,401][gurobipy][INFO] - Reading time = 0.40 seconds
+[2026-05-25 13:28:25,402][gurobipy][INFO] - obj: 305770 rows, 131047 columns, 546048 nonzeros
+[2026-05-25 13:28:25,402][gurobipy][INFO] - Set parameter NumericFocus to value 3
+[2026-05-25 13:28:25,403][gurobipy][INFO] - Set parameter ObjScale to value -1
+[2026-05-25 13:28:25,403][gurobipy][INFO] - Set parameter ScaleFlag to value 2
+[2026-05-25 13:28:25,404][gurobipy][INFO] - Set parameter LogToConsole to value 0
+[2026-05-25 13:28:25,404][gurobipy][INFO] - Gurobi Optimizer version 13.0.2 build v13.0.2rc1 (linux64 - "Debian GNU/Linux 13 (trixie)")
+[2026-05-25 13:28:25,405][gurobipy][INFO] - 
+[2026-05-25 13:28:25,405][gurobipy][INFO] - CPU model: 13th Gen Intel(R) Core(TM) i7-13620H, instruction set [SSE2|AVX|AVX2]
+[2026-05-25 13:28:25,405][gurobipy][INFO] - Thread count: 8 physical cores, 16 logical processors, using up to 16 threads
+[2026-05-25 13:28:25,406][gurobipy][INFO] - 
+[2026-05-25 13:28:25,406][gurobipy][INFO] - Non-default parameters:
+[2026-05-25 13:28:25,407][gurobipy][INFO] - ObjScale  -1
+[2026-05-25 13:28:25,407][gurobipy][INFO] - ScaleFlag  2
+[2026-05-25 13:28:25,408][gurobipy][INFO] - LogToConsole  0
+[2026-05-25 13:28:25,408][gurobipy][INFO] - NumericFocus  3
+[2026-05-25 13:28:25,408][gurobipy][INFO] - 
+[2026-05-25 13:28:25,409][gurobipy][INFO] - Academic license 2709657 - for non-commercial use only - registered to n1___@qut.edu.au
+[2026-05-25 13:28:25,409][gurobipy][INFO] - Optimize a model with 305770 rows, 131047 columns and 546048 nonzeros (Min)
+[2026-05-25 13:28:25,418][gurobipy][INFO] - Model fingerprint: 0xe061c2d0
+[2026-05-25 13:28:25,418][gurobipy][INFO] - Model has 43684 linear objective coefficients
+[2026-05-25 13:28:25,420][gurobipy][INFO] - Coefficient statistics:
+[2026-05-25 13:28:25,421][gurobipy][INFO] -   Matrix range     [7e-07, 4e+00]
+[2026-05-25 13:28:25,422][gurobipy][INFO] -   Objective range  [3e-03, 3e+05]
+[2026-05-25 13:28:25,422][gurobipy][INFO] -   Bounds range     [0e+00, 0e+00]
+[2026-05-25 13:28:25,423][gurobipy][INFO] -   RHS range        [6e-01, 1e+09]
+[2026-05-25 13:28:25,423][gurobipy][INFO] - 
+[2026-05-25 13:28:25,687][gurobipy][INFO] - Presolve removed 235592 rows and 69601 columns
+[2026-05-25 13:28:25,687][gurobipy][INFO] - Presolve time: 0.28s
+[2026-05-25 13:28:25,688][gurobipy][INFO] - Presolved: 70178 rows, 61446 columns, 219125 nonzeros
+[2026-05-25 13:28:25,688][gurobipy][INFO] - 
+[2026-05-25 13:28:25,724][gurobipy][INFO] - Concurrent LP optimizer: primal simplex, dual simplex, and barrier
+[2026-05-25 13:28:25,725][gurobipy][INFO] - Showing barrier log only...
+[2026-05-25 13:28:25,726][gurobipy][INFO] - 
+[2026-05-25 13:28:25,815][gurobipy][INFO] - Ordering time: 0.04s
+[2026-05-25 13:28:25,845][gurobipy][INFO] - 
+[2026-05-25 13:28:25,846][gurobipy][INFO] - Barrier statistics:
+[2026-05-25 13:28:25,846][gurobipy][INFO] -  Dense cols : 4
+[2026-05-25 13:28:25,847][gurobipy][INFO] -  AA' NZ     : 1.926e+05
+[2026-05-25 13:28:25,847][gurobipy][INFO] -  Factor NZ  : 8.982e+05 (roughly 60 MB of memory)
+[2026-05-25 13:28:25,847][gurobipy][INFO] -  Factor Ops : 1.387e+07 (less than 1 second per iteration)
+[2026-05-25 13:28:25,848][gurobipy][INFO] -  Threads    : 1
+[2026-05-25 13:28:25,883][gurobipy][INFO] - 
+[2026-05-25 13:28:25,884][gurobipy][INFO] -                   Objective                Residual
+[2026-05-25 13:28:25,884][gurobipy][INFO] - Iter       Primal          Dual         Primal    Dual     Compl     Time
+[2026-05-25 13:28:25,888][gurobipy][INFO] -    0   1.10334382e+09 -2.66279230e+16  3.82e+03 4.55e-14  3.36e+06     0s
+[2026-05-25 13:28:25,952][gurobipy][INFO] -    1   6.60245423e+08 -6.34016098e+15  9.76e+02 7.53e+01  6.76e+05     1s
+[2026-05-25 13:28:26,034][gurobipy][INFO] -    2   5.79961826e+08 -1.46573238e+15  1.64e+02 2.38e+01  1.44e+05     1s
+[2026-05-25 13:28:26,136][gurobipy][INFO] -    3   5.67396259e+08 -1.96333776e+14  1.62e+01 2.50e+00  1.71e+04     1s
+[2026-05-25 13:28:26,221][gurobipy][INFO] -    4   5.66201161e+08 -2.39930716e+13  1.61e+00 2.58e-01  1.90e+03     1s
+[2026-05-25 13:28:26,287][gurobipy][INFO] -    5   5.65882559e+08 -2.77327783e+12  1.59e-01 2.59e-02  2.04e+02     1s
+[2026-05-25 13:28:26,358][gurobipy][INFO] -    6   5.64526052e+08 -2.85243103e+11  1.58e-02 2.59e-03  2.06e+01     1s
+[2026-05-25 13:28:26,440][gurobipy][INFO] -    7   5.51485388e+08 -2.87671912e+10  1.57e-03 2.54e-04  2.09e+00     1s
+[2026-05-25 13:28:26,507][gurobipy][INFO] -    8   4.58599012e+08 -3.12416014e+09  1.55e-04 2.54e-05  2.48e-01     1s
+[2026-05-25 13:28:26,610][gurobipy][INFO] -    9   2.68166019e+08 -3.73077029e+08  1.54e-05 2.67e-06  4.01e-02     1s
+[2026-05-25 13:28:26,725][gurobipy][INFO] -   10   1.07985383e+08 -2.87218227e+07  2.40e-06 2.86e-07  7.72e-03     1s
+[2026-05-25 13:28:26,814][gurobipy][INFO] -   11   6.73826371e+07  4.17205616e+07  3.18e-07 4.00e-08  1.42e-03     1s
+[2026-05-25 13:28:26,881][gurobipy][INFO] -   12   6.06530068e+07  5.31678475e+07  7.54e-08 1.14e-08  4.14e-04     1s
+[2026-05-25 13:28:26,943][gurobipy][INFO] -   13   5.97074938e+07  5.72487376e+07  3.91e-08 1.90e-09  1.35e-04     2s
+[2026-05-25 13:28:27,004][gurobipy][INFO] -   14   5.92228845e+07  5.80004412e+07  1.42e-08 7.35e-10  6.71e-05     2s
+[2026-05-25 13:28:27,087][gurobipy][INFO] -   15   5.88152231e+07  5.85566194e+07  3.06e-09 2.17e-19  1.41e-05     2s
+[2026-05-25 13:28:27,238][gurobipy][INFO] -   16   5.86818343e+07  5.86451517e+07  4.04e-10 2.17e-19  2.00e-06     2s
+[2026-05-25 13:28:27,379][gurobipy][INFO] -   17   5.86643953e+07  5.86565428e+07  8.73e-11 2.17e-19  4.27e-07     2s
+[2026-05-25 13:28:27,455][gurobipy][INFO] -   18   5.86618057e+07  5.86584482e+07  4.00e-11 2.17e-19  1.83e-07     2s
+[2026-05-25 13:28:27,530][gurobipy][INFO] -   19   5.86609903e+07  5.86588625e+07  2.55e-11 2.17e-19  1.16e-07     2s
+[2026-05-25 13:28:27,603][gurobipy][INFO] -   20   5.86606108e+07  5.86591006e+07  1.82e-11 3.25e-19  8.22e-08     2s
+[2026-05-25 13:28:27,706][gurobipy][INFO] -   21   5.86603590e+07  5.86594001e+07  1.27e-11 3.25e-19  5.22e-08     2s
+[2026-05-25 13:28:27,786][gurobipy][INFO] -   22   5.86602222e+07  5.86594550e+07  1.09e-11 2.17e-19  4.17e-08     2s
+[2026-05-25 13:28:27,889][gurobipy][INFO] -   23   5.86600638e+07  5.86595822e+07  7.28e-12 2.17e-19  2.62e-08     2s
+[2026-05-25 13:28:28,021][gurobipy][INFO] -   24   5.86599718e+07  5.86596201e+07  7.28e-12 2.17e-19  1.91e-08     3s
+[2026-05-25 13:28:28,123][gurobipy][INFO] -   25   5.86599248e+07  5.86596430e+07  7.28e-12 2.17e-19  1.53e-08     3s
+[2026-05-25 13:28:28,198][gurobipy][INFO] -   26   5.86599061e+07  5.86596474e+07  7.28e-12 3.25e-19  1.41e-08     3s
+[2026-05-25 13:28:28,273][gurobipy][INFO] -   27   5.86598911e+07  5.86596563e+07  7.28e-12 3.25e-19  1.28e-08     3s
+[2026-05-25 13:28:28,369][gurobipy][INFO] -   28   5.86598629e+07  5.86596826e+07  5.46e-12 3.25e-19  9.81e-09     3s
+[2026-05-25 13:28:28,470][gurobipy][INFO] -   29   5.86598402e+07  5.86596929e+07  7.28e-12 3.25e-19  8.02e-09     3s
+[2026-05-25 13:28:28,571][gurobipy][INFO] -   30   5.86598221e+07  5.86597013e+07  7.28e-12 3.25e-19  6.57e-09     3s
+[2026-05-25 13:28:28,675][gurobipy][INFO] -   31   5.86597849e+07  5.86597060e+07  3.64e-12 2.42e-19  4.30e-09     3s
+[2026-05-25 13:28:28,778][gurobipy][INFO] -   32   5.86597688e+07  5.86597148e+07  3.64e-12 2.18e-19  2.94e-09     3s
+[2026-05-25 13:28:28,880][gurobipy][INFO] -   33   5.86597543e+07  5.86597201e+07  3.64e-12 3.25e-19  1.86e-09     3s
+[2026-05-25 13:28:28,982][gurobipy][INFO] -   34   5.86597456e+07  5.86597250e+07  3.64e-12 2.17e-19  1.13e-09     4s
+[2026-05-25 13:28:29,057][gurobipy][INFO] -   35   5.86597411e+07  5.86597274e+07  3.64e-12 2.17e-19  7.43e-10     4s
+[2026-05-25 13:28:29,132][gurobipy][INFO] -   36   5.86597379e+07  5.86597291e+07  1.82e-12 2.17e-19  4.77e-10     4s
+[2026-05-25 13:28:29,211][gurobipy][INFO] -   37   5.86597363e+07  5.86597315e+07  3.64e-12 2.17e-19  2.62e-10     4s
+[2026-05-25 13:28:29,284][gurobipy][INFO] -   38   5.86597342e+07  5.86597328e+07  3.64e-12 2.17e-19  7.66e-11     4s
+[2026-05-25 13:28:29,352][gurobipy][INFO] -   39   5.86597334e+07  5.86597332e+07  3.64e-12 1.38e-17  1.08e-11     4s
+[2026-05-25 13:28:29,357][gurobipy][INFO] - 
+[2026-05-25 13:28:29,358][gurobipy][INFO] - Barrier solved model in 39 iterations and 3.95 seconds (2.65 work units)
+[2026-05-25 13:28:29,358][gurobipy][INFO] - Optimal objective 5.86597334e+07
+[2026-05-25 13:28:29,360][gurobipy][INFO] - 
+[2026-05-25 13:28:29,385][gurobipy][INFO] - Crossover log...
+[2026-05-25 13:28:29,386][gurobipy][INFO] - 
+[2026-05-25 13:28:29,413][gurobipy][INFO] -     2776 DPushes remaining with DInf 5.9822095e-05                 4s
+[2026-05-25 13:28:29,524][gurobipy][INFO] -        0 DPushes remaining with DInf 0.0000000e+00                 4s
+[2026-05-25 13:28:29,545][gurobipy][INFO] - 
+[2026-05-25 13:28:29,546][gurobipy][INFO] -    13308 PPushes remaining with PInf 4.4485854e-01                 4s
+[2026-05-25 13:28:31,018][gurobipy][INFO] -     3086 PPushes remaining with PInf 2.3364586e+00                 6s
+[2026-05-25 13:28:31,293][gurobipy][INFO] -        0 PPushes remaining with PInf 2.1808861e+00                 6s
+[2026-05-25 13:28:31,309][gurobipy][INFO] - 
+[2026-05-25 13:28:31,312][gurobipy][INFO] -   Push phase complete: Pinf 2.1808861e+00, Dinf 5.7456300e-18      6s
+[2026-05-25 13:28:31,312][gurobipy][INFO] - 
+[2026-05-25 13:28:31,344][gurobipy][INFO] - Iteration    Objective       Primal Inf.    Dual Inf.      Time
+[2026-05-25 13:28:31,345][gurobipy][INFO] -    15159    5.8659733e+07   0.000000e+00   2.780593e-01      6s
+[2026-05-25 13:28:31,566][gurobipy][INFO] - Crossover time: 2.20 seconds (1.83 work units)
+[2026-05-25 13:28:31,966][gurobipy][INFO] - 
+[2026-05-25 13:28:31,967][gurobipy][INFO] - Solved with barrier
+[2026-05-25 13:28:32,919][gurobipy][INFO] - 
+[2026-05-25 13:28:32,920][gurobipy][INFO] - Extra simplex iterations after uncrush: 36
+[2026-05-25 13:28:32,920][gurobipy][INFO] -    15337    5.8659733e+07   0.000000e+00   0.000000e+00      8s
+[2026-05-25 13:28:32,921][gurobipy][INFO] - 
+[2026-05-25 13:28:32,921][gurobipy][INFO] - Solved in 15337 iterations and 7.51 seconds (5.11 work units)
+[2026-05-25 13:28:32,922][gurobipy][INFO] - Optimal objective  5.865973325e+07
+[2026-05-25 13:28:34,801][gurobipy][INFO] - Warning: environment still referenced so free is deferred (Continue to use WLS)
+[2026-05-25 13:28:34,804][linopy.constants][INFO] -  Optimization successful: 
+Status: ok
+Termination condition: optimal
+Solution: 131047 primals, 305770 duals
+Objective: 5.87e+07
+Solver model: available
+Solver message: 2
+
+[2026-05-25 13:28:35,317][pypsa.optimization.optimize][INFO] - The shadow-prices of the constraints Generator-fix-p-lower, Generator-fix-p-upper, Generator-ext-p-lower, Generator-ext-p-upper, Link-fix-p-lower, Link-fix-p-upper, Link-ext-p-lower, Link-ext-p-upper, Store-fix-e-lower, Store-fix-e-upper, StorageUnit-ext-p_dispatch-lower, StorageUnit-ext-p_dispatch-upper, StorageUnit-ext-p_store-lower, StorageUnit-ext-p_store-upper, StorageUnit-ext-state_of_charge-lower, StorageUnit-ext-state_of_charge-upper, StorageUnit-energy_balance, Store-energy_balance were not assigned to the network.
+[2026-05-25 13:28:35,547][dc.network.solver][INFO] - Solve complete: status=ok, condition=optimal
+[2026-05-25 13:28:35,560][dc.network.solver][INFO] - 
+══ Data Centre Metrics ══════════════════════════════════════════
+  PUE   Power Usage Effectiveness  : 1.3400
+  WUE   (IT cooling)               : 0.0120 kL/MWh_it
+  WUE   (CCGT water)               : 1.8381 kL/MWh_it
+  WUE   (total)                    : 1.8501 kL/MWh_it
+  CUE   Carbon Usage Effectiveness : 0.0376 tCO₂/MWh_it
+  REF   Renewable Energy Factor    : 0.1%
+── Totals ────────────────────────────────────────────────────────
+  IT load             :    655,200.0 MWh/yr
+  Total facility      :    877,968.0 MWh/yr
+  Water (IT)          :        7,862 kL/yr
+  Water (CCGT)        :    1,204,313 kL/yr
+  Water (total)       :    1,212,175 kL/yr
+  Scope 1 CO₂         :     24,626.3 t/yr
+  Renewable energy    :        554.1 MWh/yr
+── Generation mix ───────────────────────────────────────────────
+  Grid import          :        540.3 MWh  0.1%  [30.0 MW]
+  CCGT                 :    877,427.7 MWh  99.9%  [196.9 MW]
+  Solar PPA            :        551.9 MWh  0.1%  [184.1 MW]
+  Wind PPA             :          2.3 MWh  0.0%  [0.0 MW]
+  Rooftop solar        :          0.0 MWh  0.0%
+  Battery (net)        :          0.0 MWh  [0.0 MWh]
+── Load shifting ─────────────────────────────────────────────────
+  Store capacity       :        0.6 MWh
+  Deferred             :      329.8 MWh/yr
+  Advanced             :      329.7 MWh/yr
+  Net shift            :        0.0 MWh/yr  (≈0 if cyclic)
+  Utilisation          :      12.6%  of store capacity
+  Peak facility draw   :      101.3 MW
+═════════════════════════════════════════════════════════════════
+[2026-05-25 13:28:35,561][__main__][INFO] - Solved | obj=58659733.25 | buses=6 generators=5 links=3 stores=2
+[2026-05-25 13:28:35,830][pypsa.network.io][INFO] - Exported network 'Unnamed Network' saved to '/workspaces/Uni/ENN655/dc/output/sweeps/tier=30.0_shift=0.001/network.nc contains: sub_networks, buses, storage_units, links, stores, carriers, loads, generators
+[2026-05-25 13:28:37,594][__main__][INFO] - Network saved → /workspaces/Uni/ENN655/dc/output/sweeps/tier=30.0_shift=0.001/network.nc
+[2026-05-25 13:28:37,667][__main__][INFO] - Results saved → /workspaces/Uni/ENN655/dc/output/sweeps/tier=30.0_shift=0.001/results.json

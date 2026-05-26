@@ -1,0 +1,7 @@
+defaults:
+  - base_config
+  - _self_
+
+simulation:
+  snapshots_start: "2025-01-01"
+  snapshots_end:   "2025-01-02"

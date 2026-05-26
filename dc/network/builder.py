@@ -50,13 +50,14 @@ import pypsa
 
 from dc.network.carriers import _CARRIER_META, Carriers
 from dc.network.models import DataCentreConfig, PPAConfig
-from dc.network.tmy_solar import build_rooftop_profile
 
 logger = logging.getLogger(__name__)
 
 
 # Constants
 GAS_GJ_TO_MWth = 1 / 3.6
+GAS_t_CO2_per_GJ = 0.05153
+GAS_t_CO2_per_MWth = GAS_t_CO2_per_GJ * GAS_GJ_TO_MWth
 
 
 # Bus names
@@ -87,22 +88,15 @@ class Builder:
 
     def __init__(self, cfg: DataCentreConfig):
         self.cfg = cfg
+        self.discount_rate = cfg.financial.real_discount_rate
+        self.project_lifetime = cfg.financial.project_lifetime
         self.n = pypsa.Network()
 
         self._snapshots: Optional[pd.DatetimeIndex] = None
 
-    @property
-    def discount_rate(self):
-        return self.cfg.financial.discount_rate
-
-    @property
-    def project_lifetime(self) -> float:
-        return self.cfg.financial.project_lifetime
-
     # ------------------------------------------------------------------
     # Public entry point
     # ------------------------------------------------------------------
-
     def build(self) -> pypsa.Network:
         """Construct and return the fully populated PyPSA network."""
 
@@ -116,9 +110,6 @@ class Builder:
 
         # Compute load + optional shifting
         self._add_compute()
-
-        # Cooling technologies (must come after compute — cooling_bus created in _add_compute)
-        self._add_cooling()
 
         # Generation & storage
         self._add_onsite_generation()
@@ -165,14 +156,32 @@ class Builder:
 
     def _setup_facility_infrastructure(self):
         # Setup electricity supply
-        self.n.add("Bus", BusName.FACILITY.value, carrier=Carriers.ELECTRICITY)
-        self.n.add("Bus", BusName.GRID.value, carrier=Carriers.GRID)
+        self.n.add("Bus", BusName.FACILITY.value, carrier=Carriers.ELECTRICITY.value)
 
         # Add CO2 emissions
-        self.n.add("Bus", BusName.FACILITY_EMISSIONS.value, carrier=Carriers.CARBON)
+        self.n.add("Bus", BusName.FACILITY_EMISSIONS.value, carrier=Carriers.CARBON.value)
+        self.n.add(
+            "Store",
+            "co2_store",
+            bus=BusName.FACILITY_EMISSIONS.value,
+            carrier=Carriers.CARBON.value,
+            e_nom=1e9,
+            e_nom_extendable=False,
+            marginal_cost=0.0,  # swap for a carbon price to penalise in objective
+            e_cyclic=False,  # emissions accumulate, don't need to return to zero
+        )
 
         # Add grid connection
         gccfg = self.cfg.grid_connection
+        self.n.add("Bus", BusName.GRID.value, carrier=Carriers.GRID.value)
+        self.n.add(
+            "Generator",
+            "nem",
+            bus=BusName.GRID.value,
+            p_nom=1e3,
+            control="Slack",
+            marginal_cost=gccfg.cost_per_MWh,
+        )
         self.n.add(
             "Link",
             name="grid_connection",
@@ -181,10 +190,11 @@ class Builder:
             efficiency=gccfg.transmission_loss_factor,
             p_nom_extendable=True,
             p_min_pu=0.0,
+            p_nom_max=gccfg.max_capacity_MW,
             discount_rate=self.discount_rate,
             lifetime=self.project_lifetime,
             overnight_cost=gccfg.capex_per_MW,
-            fom_cost=gccfg.capex_per_MW * 0.02,  # TODO: Check this
+            fom_cost=gccfg.capex_per_MW * 0.025,
         )
 
         # Add water supply
@@ -196,8 +206,9 @@ class Builder:
             bus=BusName.WATER_SUPPLY.value,
             carrier=Carriers.WATER.value,
             marginal_cost=wcfg.cost_per_L,
-            p_nom=1e9,  # effectively unlimited capacity
-            p_nom_extendable=False,
+            p_nom=0.0,
+            p_nom_max=1e3,  # effectively unlimited capacity
+            p_nom_extendable=True,
             control="Slack",
         )
 
@@ -211,8 +222,9 @@ class Builder:
             bus=BusName.GAS_SUPPLY.value,
             carrier=Carriers.GAS.value,
             marginal_cost=cost_per_MWh_th,
-            p_nom=1e9,
-            p_nom_extendable=False,
+            p_nom=0.0,
+            p_nom_max=1e3,
+            p_nom_extendable=True,
         )
 
     # ------------------------------------------------------------------
@@ -239,8 +251,7 @@ class Builder:
         ccfg = self.cfg.compute
 
         # ── Buses ──────────────────────────────────────────────────────────
-        self.n.add("Bus", BusName.COMPUTE.value, carrier=Carriers.COMPUTE)
-        self.n.add("Bus", BusName.COOLING.value, carrier=Carriers.COOLING)
+        self.n.add("Bus", BusName.COMPUTE.value, carrier=Carriers.COMPUTE.value)
 
         # ── Demand on compute bus ──────────────────────────────────────────
         load_profile = ccfg.build_compute_ts(self._snapshots)
@@ -254,15 +265,14 @@ class Builder:
 
         # ── Optional load-shift buffer ─────────────────────────────────────
         lscfg = ccfg.load_shift
-        if lscfg.enabled:
-            avg_load = float(load_profile.mean())
-            e_nom = avg_load * lscfg.max_store_energy_factor * lscfg.max_shift_hours
+        if lscfg.enabled and lscfg.max_store_energy_factor:
+            e_nom = load_profile * lscfg.max_store_energy_factor * lscfg.max_shift_hours
 
             self.n.add(
                 "Store",
                 "compute_shift",
                 bus=BusName.COMPUTE.value,
-                carrier=Carriers.COMPUTE.value,
+                carrier=Carriers.COMPUTE_SHIFT.value,
                 e_nom=e_nom,
                 e_nom_extendable=False,
                 e_cyclic=True,
@@ -277,19 +287,15 @@ class Builder:
             )
 
         # ── compute_to_facility Link ───────────────────────────────────────
-        # bus0: requests consumed from compute_bus
-        # bus1: IT electricity injected into facility  (efficiency = MW_e / request)
-        # bus2: heat injected into cooling_bus          (efficiency2 = same ratio,
-        #        because all IT electricity eventually becomes heat)
         self.n.add(
             "Link",
-            "compute_to_facility",
-            bus0=BusName.COMPUTE.value,
-            bus1=BusName.FACILITY.value,
-            bus2=BusName.WATER_SUPPLY.value,
-            efficiency=ccfg.power_use_effectiveness,  # MW_e per request → facility
-            efficiency2=ccfg.water_use_effectiveness,  # MW_th per request → cooling_bus
-            p_nom=load_profile.max() * 2,
+            "facility_to_compute",
+            bus0=BusName.FACILITY.value,  # draws from facility — appears as load
+            bus1=BusName.COMPUTE.value,  # satisfies compute bus demand
+            bus2=BusName.WATER_SUPPLY.value,  # water consumed per IT-MW
+            efficiency=1.0 / ccfg.power_use_effectiveness,  # compute MW per facility MW
+            efficiency2=-ccfg.water_use_effectiveness / ccfg.power_use_effectiveness,
+            p_nom=load_profile * 2,
             p_nom_extendable=False,
         )
 
@@ -297,8 +303,6 @@ class Builder:
         gen = self.cfg.generation.onsite
         if gen.ccgt.enabled:
             self._add_ccgt()
-        if gen.rooftop_solar.enabled:
-            self._add_rooftop_solar()
         if gen.battery.enabled:
             self._add_battery()
 
@@ -307,9 +311,7 @@ class Builder:
     # ------------------------------------------------------------------
     def _add_ccgt(self) -> None:
         ccfg = self.cfg.generation.onsite.ccgt
-        water_per_MWh_th = ccfg.water_L_per_MWh
-        co2_t_per_MWh_th = self.cfg.supplies.gas.scope1_co2_t_per_GJ * GAS_GJ_TO_MWth
-
+        water_kL_per_MWh_th = ccfg.water_kL_per_MWh
         self.n.add(
             "Link",
             "CCGT",
@@ -318,55 +320,20 @@ class Builder:
             bus2=BusName.WATER_SUPPLY.value,
             bus3=BusName.FACILITY_EMISSIONS.value,
             efficiency=ccfg.electrical_efficiency,
-            efficiency2=-water_per_MWh_th,
-            efficiency3=co2_t_per_MWh_th,
-            p_nom_extendable=ccfg.p_nom_extendable,
+            efficiency2=-water_kL_per_MWh_th,
+            efficiency3=GAS_t_CO2_per_MWth,
+            p_nom_extendable=True,
             p_nom=0.0,
             overnight_cost=ccfg.capex_per_MW,
+            fom_cost=ccfg.opex_per_MW,
             lifetime=ccfg.lifetime_years,
             discount_rate=self.discount_rate,
+            carrier="ccgt",
         )
 
     # ------------------------------------------------------------------
     # Renewables
     # ------------------------------------------------------------------
-    def _add_rooftop_solar(self) -> None:
-        rcfg = self.cfg.generation.onsite.rooftop_solar
-
-        location = self.cfg.facility.location
-
-        profile = build_rooftop_profile(
-            solar_cfg=rcfg,
-            latitude=location.latitude,
-            longitude=location.longitude,
-            farm_tz=self.cfg.facility.facility_tz,
-            snapshots=self.n.snapshots,
-        )
-
-        self.n.generators_t.p_max_pu["rooftop_solar"] = profile
-
-        logger.info(
-            "Rooftop solar profile: mean CF=%.4f, yield=%.0f MWh/MWp/yr (%s)",
-            profile.mean(),
-            profile.mean() * 8760,
-            "TMY",
-        )
-
-        p_nom_max = self.cfg.facility.usable_roof_area_m2 / rcfg.m2_footprint_per_MW
-
-        self.n.add(
-            "Generator",
-            "rooftop_solar",
-            bus=BusName.FACILITY.value,
-            carrier=Carriers.SOLAR.value,
-            p_nom_extendable=rcfg.p_nom_extendable,
-            p_nom=0.0,
-            p_nom_max=p_nom_max,
-            discount_rate=self.discount_rate,
-            overnight_cost=rcfg.capex_per_MW,
-            fom_cost=rcfg.opex_per_MW,
-            lifetime=rcfg.lifetime_years,
-        )
 
     def _add_ppa_contract(self, contract: PPAConfig) -> None:
         """
@@ -406,7 +373,7 @@ class Builder:
         candidate contract structure has been identified.
         """
         gen_name = f"ppa:{contract.name}"
-        carrier = f"ppa_{contract.technology}"
+        carrier = f"ppa_{contract.technology.value}"
 
         # Register a carrier for this PPA technology type (idempotent)
         if carrier not in self.n.carriers.index:
@@ -428,10 +395,10 @@ class Builder:
             gen_name,
             bus="grid",
             carrier=carrier,
-            marginal_cost=contract.contract_price_per_MWh,
+            marginal_cost=contract.marginal_cost_per_MWh,
             p_nom_extendable=True,
             p_nom=0.0,
-            capex=contract.contract_capacity_fee_per_MW,
+            overnight_cost=contract.contract_capacity_fee_per_MW,
             discount_rate=self.discount_rate,
             lifetime=self.project_lifetime,
         )
@@ -446,19 +413,25 @@ class Builder:
         """
         bcfg = self.cfg.generation.onsite.battery
 
+        capex_per_MW = bcfg.capex_per_MWh / bcfg.max_hours
+        opex_per_MW = bcfg.opex_per_MWh / bcfg.max_hours
         self.n.add(
-            "Store",
+            "StorageUnit",
             "facility_battery",
             bus=BusName.FACILITY.value,
             carrier=Carriers.BESS.value,
-            e_nom=0.0,
-            e_nom_extendable=True,
-            e_cyclic=True,
+            p_nom=0.0,
+            p_nom_extendable=True,
+            cyclic_state_of_charge=True,
+            state_of_charge_initial=0.5,
             marginal_cost=0.0,
-            e_min_pu=0.0,
-            overnight_cost=bcfg.capex_per_MWh,
-            fom_cost=bcfg.opex_per_MWh,
             efficiency_store=bcfg.efficiency_charge,
+            efficiency_dispatch=bcfg.efficiency_discharge,
+            p_max_pu=1.0,
+            p_min_pu=-1.0,
+            max_hours=bcfg.max_hours,
+            overnight_cost=capex_per_MW,
+            fom_cost=opex_per_MW,
             lifetime=bcfg.lifetime_years,
             discount_rate=self.discount_rate,
         )

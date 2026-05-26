@@ -68,16 +68,12 @@ class LocationSolarProfile:
     @property
     def surface_azimuth(self) -> float:
         if self.latitude > 0:
-            return 0.0
-        else:
             return 180.0
+        else:
+            return 0.0
 
     def profile(self, snapshots: pd.DatetimeIndex) -> pd.Series:
-        if snapshots.tz is None:
-            times_local = snapshots.tz_localize("UTC").tz_convert(self.farm_tz)
-        else:
-            times_local = snapshots.tz_convert(self.farm_tz)
-
+        times_local =snapshots.tz_localize(self.farm_tz)
         clearsky = self.location.get_clearsky(times_local)
         solar_position = self.location.get_solarposition(times_local)
 

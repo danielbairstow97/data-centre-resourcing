@@ -126,11 +126,15 @@ class Solver:
             len(self.n.links),
             len(self.n.stores),
         )
-        
 
         status, condition = self.n.optimize(
             solver_name=self.cfg.name,
-            solver_options=self.cfg.options,
+            log_to_console=False,
+            solver_options={
+                "NumericFocus": 3,       # max numerical care
+                "ObjScale": -1,          # auto-scale objective (Gurobi picks)
+                "ScaleFlag": 2,          # aggressive scaling
+            },
             extra_functionality=self._extra_functionality,
         )
 
@@ -144,7 +148,7 @@ class Solver:
 
         metrics = MetricsCalculator(
             self.n,
-            grid_co2_intensity=1.0,  # TODO: Check
+            grid_co2_intensity=1.0,
         ).compute()
 
         logger.info("\n%s", metrics.summary())

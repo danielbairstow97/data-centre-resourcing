@@ -1,0 +1,18 @@
+defaults:
+  - base_config
+  - override /hydra/launcher: basic   # parallel local runs; swap to submitit for HPC
+
+
+hydra:
+  run:
+    dir: /tmp/hydra_run  # single throwaway dir for non-multirun calls
+  sweep:
+    dir: output/sweeps/
+    subdir: tier=${grid_connection.max_capacity_MW}_shift=${compute.load_shift.max_store_energy_factor}
+  output_subdir: null  # don't write .hydra/ folders into run dirs
+  job:
+    chdir: false
+  sweeper:
+    params:
+      grid_connection.max_capacity_MW: 0.0, 30.0, 100.0, 150.0
+      compute.load_shift.max_store_energy_factor: 0.0, 0.001, 0.01, 0.10

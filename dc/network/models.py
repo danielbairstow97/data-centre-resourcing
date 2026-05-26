@@ -11,7 +11,6 @@ from __future__ import annotations
 
 from datetime import date
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -82,85 +81,15 @@ class LoadShiftConfig(BaseModel):
 
 class WaterSupplyConfig(BaseModel):
     cost_per_L: float = Field(ge=0, description="$/L of mains water")
-    # Cap on total water consumption — None means unconstrained.
-    max_daily_L: Optional[float] = Field(description="Hard daily water consumption cap (litres)")
 
 
 class GasSupplyConfig(BaseModel):
     cost_per_GJ: float = Field(ge=0, description="$/GJ of natural gas")
-    scope1_co2_t_per_GJ: float = Field(
-        ge=0, description="tCO2/GJ emitted by natural gas consumption"
-    )
-    scope3_co2_t_per_GJ: float = Field(
-        ge=0, description="tCO2/GJ emitted by natural gas consumption"
-    )
 
 
 class SuppliesConfig(BaseModel):
     water: WaterSupplyConfig
     gas: GasSupplyConfig
-
-
-# ---------------------------------------------------------------------------
-# Cooling technology models
-# ---------------------------------------------------------------------------
-# Hydra-friendly design: CoolingConfig holds a *list* of CoolingComponent
-# entries rather than a fixed dict of optional sub-types.  Each Hydra config
-# group file (conf/cooling/*.yaml) describes one scenario as a flat list,
-# which Hydra merges into this structure without any "enabled: false" noise.
-# ---------------------------------------------------------------------------
-class CoolingComponent(BaseModel):
-    """
-    A single cooling technology contributing to the facility's heat rejection.
-
-    PyPSA topology per component
-    ----------------------------
-      bus0 = cooling_bus  (heat consumed, MW_th)
-      bus1 = facility     (electricity drawn, efficiency = -elec_MW_per_MW_heat)
-      bus2 = water_bus    (water consumed,   efficiency = -water_L_per_MWh_heat)
-    """
-
-    # Human-readable label used as the PyPSA Link name: "cooling:<name>"
-    name: str = Field(description="Unique identifier for this cooling component")
-
-    # ── Operational parameters ─────────────────────────────────────────────
-    elec_MW_per_MW_heat: float = Field(
-        ge=0.0,
-        description="Electrical overhead per MW_th of heat rejected (MW_e / MW_th). "
-        "Equivalent to (PUE_component - 1).",
-    )
-    water_L_per_MWh_heat: float = Field(
-        ge=0.0,
-        description="Water consumed per MWh of heat rejected (L / MWh_th)",
-    )
-
-    # ── Economics ──────────────────────────────────────────────────────────
-    capex_per_MW_it: float = Field(
-        ge=0,
-        description="Capital cost per MW of IT load served ($/MW_it). "
-        "Annualised by the builder using lifetime_years.",
-    )
-    opex_per_MW: float = Field(
-        ge=0,
-        description="Fixed O&M cost ($/MW_it/year)",
-    )
-    lifetime_years: float = Field(gt=0)
-
-    # ── Roof space footprint ──────────────────────────────────────────────
-    # Area consumed on the facility roof per MW of IT load served.
-    # Set to 0.0 for technologies that are NOT roof-mounted:
-    #   - Liquid / immersion cooling (CDUs inside the building)
-    #   - Any off-site or ground-level plant
-    # Roof-mounted technologies (cooling towers, dry coolers, AHUs) should
-    # carry a realistic m²/MW_it figure — see defaults below per subclass.
-    roof_m2_per_MW_it: float = Field(
-        default=0.0,
-        ge=0,
-        description=(
-            "Roof area consumed per MW of IT load served (m²/MW_it). "
-            "Zero for non-roof-mounted plant (liquid cooling, ground-level units)."
-        ),
-    )
 
 
 class CCGTConfig(BaseModel):
@@ -169,7 +98,7 @@ class CCGTConfig(BaseModel):
     enabled: bool = True
     capex_per_MW: float = Field(ge=0, description="$/MW overnight CAPEX")
     opex_per_MW: float = Field(ge=0, description="$/MW/year OPEX")
-    water_L_per_MWh: float = Field(
+    water_kL_per_MWh: float = Field(
         ge=0,
         description="Litres of cooling water per MWh of electrical output (wet-cooled)",
     )
@@ -342,12 +271,13 @@ class PPAConfig(BaseModel):
     enabled: bool = True
 
     # ── Contract financial terms ───────────────────────────────────────────
-    contract_price_per_MWh: float = Field(
+    lcoe: float = Field(
         gt=0,
         description="Fixed price paid per MWh of contracted generation ($/MWh)",
     )
+    contract_margin: float
     contract_capacity_fee_per_MW: float = Field(
-        default=0.0,
+        default=1.0,
         ge=0,
         description=("Upfront or annual capacity charge per contracted MW ($/MW). "),
     )
@@ -356,6 +286,10 @@ class PPAConfig(BaseModel):
     profile: PPAProfile = Field(
         description="Contract generation profile — defines p_max_pu time-series",
     )
+
+    @property
+    def marginal_cost_per_MWh(self) -> float:
+        return self.lcoe * (1 + self.contract_margin)
 
 
 class BatteryConfig(BaseModel):
@@ -381,17 +315,14 @@ class GridConnectionConfig(BaseModel):
     """
 
     capex_per_MW: float
+    cost_per_MWh: float
+    max_capacity_MW: float
     transmission_loss_factor: float
 
 
 class OnsiteGenerationConfig(BaseModel):
     ccgt: CCGTConfig
-    rooftop_solar: RooftopSolarConfig
     battery: BatteryConfig
-
-
-class NEMConfig(BaseModel):
-    cost_per_MWh: float
 
 
 class GenerationConfig(BaseModel):
@@ -401,7 +332,6 @@ class GenerationConfig(BaseModel):
     ppa: list[PPAConfig] = Field(
         description="Portfolio of PPA contracts (replaces grid_solar / grid_wind)",
     )
-    nem: NEMConfig
 
 
 # ---------------------------------------------------------------------------
@@ -418,44 +348,11 @@ class PerformanceTargetConfig(BaseModel):
     water_usage_effectiveness: float
 
 
-# ---------------------------------------------------------------------------
-# Facility physical parameters
-# ---------------------------------------------------------------------------
-class FacilityConfig(BaseModel):
-    """
-    Physical characteristics of the data centre building and site.
-
-    Roof space is the shared scarce resource competed for by rooftop solar
-    and roof-mounted cooling plant (cooling towers, dry coolers, AHUs).
-    Technologies that live inside the building or off-site (liquid cooling
-    CDUs, grid-connected solar/wind) do not consume roof area.
-    """
-
-    targets: PerformanceTargetConfig
-    # Total physical roof area of the data centre building(s)
-    roof_area_m2: float = Field(
-        gt=0,
-        description="Total roof area of the facility (m²)",
-    )
-
-    # Not all roof area is usable — penetrations, edge setbacks, structural
-    # bays, access walkways typically consume 10–25% of gross area.
-    usable_roof_fraction: float = Field(
-        gt=0,
-        le=1.0,
-        description=(
-            "Fraction of gross roof area that is structurally and practically "
-            "available for equipment (accounts for setbacks, penetrations, walkways). "
-            "Typical range: 0.70–0.85."
-        ),
-    )
-
+class SimulationConfig(BaseModel):
+    snapshots_start: date = Field(description="ISO date string")
+    snapshots_end: date = Field(description="ISO date string (inclusive)")
+    snapshot_freq: str = Field(default="h", description="Pandas frequency string (e.g. 'h', '3h')")
     location: Coordinate
-
-    @property
-    def usable_roof_area_m2(self) -> float:
-        """Net usable roof area after applying the usable fraction."""
-        return self.roof_area_m2 * self.usable_roof_fraction
 
     @property
     def facility_tz(self) -> str | None:
@@ -465,15 +362,14 @@ class FacilityConfig(BaseModel):
         return tz
 
 
-class SimulationConfig(BaseModel):
-    snapshots_start: date = Field(description="ISO date string")
-    snapshots_end: date = Field(description="ISO date string (inclusive)")
-    snapshot_freq: str = Field(default="h", description="Pandas frequency string (e.g. 'h', '3h')")
-
-
 class FinancialConfig(BaseModel):
-    discount_rate: float
+    inflation_rate: float
+    wacc: float
     project_lifetime: float
+
+    @property
+    def real_discount_rate(self) -> float:
+        return (1 + self.wacc) / (1 + self.inflation_rate) - 1
 
 
 # ---------------------------------------------------------------------------
@@ -487,9 +383,7 @@ class DataCentreConfig(BaseModel):
     # Simulation horizon
     simulation: SimulationConfig
     financial: FinancialConfig
-    facility: FacilityConfig
     compute: ComputeConfig
-    cooling: list[CoolingComponent]
     supplies: SuppliesConfig
     grid_connection: GridConnectionConfig
 

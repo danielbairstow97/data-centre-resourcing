@@ -1,0 +1,19 @@
+{
+  "scenario_name": "DataCentre-Alpha",
+  "grid_capacity": 0,
+  "load_shift_fraction": 0.01,
+  "pue": 1.34,
+  "wue": 0.012,
+  "total_cost_aud_pa": 58662611.17850718,
+  "gen_capacity_mw": 1000.0,
+  "link_capacity_mw": 0.0,
+  "store_capacity_mwh": 1000000000.0,
+  "dispatch_mwh_gen_nem": 0.0,
+  "dispatch_mwh_gen_water_supply": 1212916.517647059,
+  "dispatch_mwh_gen_gas_supply": 1721505.8823529412,
+  "dispatch_mwh_gen_ppa_solar_farm": 0.0,
+  "dispatch_mwh_gen_ppa_wind_farm": 0.0,
+  "dispatch_mwh_link_grid_connection": 0.0,
+  "dispatch_mwh_link_facility_to_compute": 877968.0000000001,
+  "dispatch_mwh_link_ccgt": 1721505.8823529412
+}
